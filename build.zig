@@ -15,6 +15,15 @@ pub fn build(b: *std.Build) void {
     mbedtls_artifact.root_module.addCMacro("MBEDTLS_CONFIG_FILE", b.fmt("\"{s}\"", .{config_header.include_path}));
     mbedtls_artifact.root_module.addIncludePath(config_header.getOutputDir());
 
+    const translate_c = b.addTranslateC(.{
+        .root_source_file = b.path("src/dtls/c.h"),
+        .target = target,
+        .optimize = optimize,
+    });
+    translate_c.addConfigHeader(config_header);
+    translate_c.addIncludePath(mbedtls_artifact.getEmittedIncludeTree());
+    const mtls = translate_c.createModule();
+
     const mod = b.addModule("webrtc", .{
         .root_source_file = b.path("src/webrtc.zig"),
         .target = target,
@@ -28,6 +37,7 @@ pub fn build(b: *std.Build) void {
             .{ .name = "rtcp", .module = media_protocols.module("rtcp") },
             .{ .name = "srtp", .module = media_protocols.module("srtp") },
             .{ .name = "sctp", .module = sctp.module("sctp") },
+            .{ .name = "mtls", .module = mtls },
         },
     });
 
@@ -35,7 +45,7 @@ pub fn build(b: *std.Build) void {
     mod.addIncludePath(config_header.getOutputDir());
 
     if (target.result.os.tag == .windows) {
-        mod.linkSystemLibrary("ws2_32", .{});
+        mod.linkSystemLibrary("ws2_32", .{ .use_pkg_config = .no });
     }
 
     {
@@ -46,7 +56,6 @@ pub fn build(b: *std.Build) void {
         const test_step = b.step("test", "Run tests");
         test_step.dependOn(&run_mod_tests.step);
     }
-
 }
 
 fn mbedtls_config(b: *std.Build) *std.Build.Step.ConfigHeader {
