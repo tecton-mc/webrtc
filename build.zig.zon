@@ -13,8 +13,8 @@
             .hash = "media_protocols-0.2.0-WF_ij9ABCAD9w9xGHH2nTLj_UIz509yU2SE-Dsxz03Fq",
         },
         .sctp = .{
-            .url = "git+https://github.com/tecton-mc/sctp.git#61f36e445acde146422ffa96557dd32fc4fd1e6d",
-            .hash = "sctp-0.0.0-jRqUYD0eBQDpL3LPbsjFp_UTOWOYBvE9xe85PqL6iMIB",
+            .url = "git+https://github.com/tecton-mc/sctp.git#dd7250305dcd13bbd66eca63237b2a351529bf9b",
+            .hash = "sctp-0.0.0-jRqUYE9QBQDMPnfCUTXDFMKeQ17kvs0R_1ZdxAsqbC6U",
         },
         .mbedtls = .{
             .url = "git+https://github.com/tecton-mc/mbedtls.git#c7c30fa817fce95dd6e7cb23713ed7d4b565cb4e",

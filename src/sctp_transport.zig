@@ -193,8 +193,9 @@ pub fn handleWrite(sctp_transport: *SctpTranport, msg: sctp.message.UserMessage)
         .unordered = msg.unordered,
     }) catch |err| switch (err) {
         error.InvalidState => return error.AssocNotConnected,
-        error.InvalidStream => unreachable,
-        else => |e| return e,
+        // WebRTC data channels are always reliable, so these can only be a bug on our side.
+        error.InvalidStream, error.UnsupportedExtension => unreachable,
+        error.OutOfMemory => return error.OutOfMemory,
     };
 }
 
